@@ -4,14 +4,21 @@ from django.utils import timezone
 from .models import Post
 from django.shortcuts import render, get_object_or_404
 from .forms import PostForm
+from django.views.generic.edit import FormView
+from django.contrib import auth
+
+# Функция для установки сессионного ключа.
+# По нему django будет определять, выполнил ли вход пользователь.
+from django.contrib.auth import login
+
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-    return render(request, 'blog/post_list.html', {'posts': posts})
+    return render(request, 'blog/post_list.html', {'posts': posts, 'username': auth.get_user(request).username})
 
 def post_detail(request, pk):
         post = get_object_or_404(Post, pk=pk)
-        return render(request, 'blog/post_detail.html', {'post': post})
+        return render(request, 'blog/post_detail.html', {'post': post, 'username': auth.get_user(request).username})
 
 def post_new(request):
         if request.method == "POST":
@@ -23,7 +30,7 @@ def post_new(request):
                 post.save()
                 return redirect('blog.views.post_detail', pk=post.pk)
         else:
-            form = PostForm()
+                form = PostForm()
         return render(request, 'blog/post_edit.html', {'form': form})
 
 def post_edit(request, pk):
@@ -37,5 +44,6 @@ def post_edit(request, pk):
                 post.save()
                 return redirect('blog.views.post_detail', pk=post.pk)
         else:
-            form = PostForm(instance=post)
+                form = PostForm(instance=post)
         return render(request, 'blog/post_edit.html', {'form': form})
+
