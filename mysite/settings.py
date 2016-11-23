@@ -30,8 +30,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 TEMPLATE_DIR =  (
-    'c:/Users/Yulia/djangogirls/blog/templates/blog',
-    'c:/Users/Yulia/djangogirls/loginsys/templates/',
+    'c:/Users/Yulia/djangogirls/blog/templates',
+     'c:/Users/Yulia/djangogirls/blog/templates/registration',
+    
 )
 
 
@@ -43,9 +44,29 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
-    'loginsys'
+    'registration', 
     
 )
+
+
+REGISTRATION_OPEN = True        # Если равно True, то пользователи могут регистрироваться
+ACCOUNT_ACTIVATION_DAYS = 7     # время в течении которого можно активировать аккаунт;
+                                # в качестве примера выбрано 7 дней или одна неделя, но Вы можете указать другое значение.
+REGISTRATION_AUTO_LOGIN = True  # Если равно  True, то пользователь будет автоматически входить в систему.
+LOGIN_REDIRECT_URL = '/'  # Страница, на которую будут попадать пользователи, после успешного входа в систему.
+LOGIN_URL = '/accounts/login/'  # Страница, на которую перенаправляются пользователи, если они не вошли в систему и
+                                # пытаются получить доступ к страницам, которые требуют аутентификации
+
+# для отправки кода активации
+AUTH_USER_EMAIL_UNIQUE = True
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'info@google.ru'
+
+
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,15 +77,15 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-)
+    )
 
 ROOT_URLCONF = 'mysite.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/Users/Yulia/djangogirls/blog/templates/blog/',
-    '/Users/Yulia/djangogirls/loginsys/templates/'],
+        'DIRS': ['/Users/Yulia/djangogirls/blog/templates',
+    '/Users/Yulia/djangogirls/blog/templates/registration'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -12,9 +12,9 @@
             <section class="top-bar-section">
                 <ul class="right">
                     {% if username %}
-                        <li><a href="/auth/logout/">Log out ({{ username }})</a></li>
+                        <li><a href="{% url 'auth_logout' %}?next=/">Log out ({{ username }})</a></li>
                     {% else %}
-                        <li><a href="/auth/login/">Log in</a></li>
+                        <li><a href="{% url 'auth_login' %}">Log in</a></li>
                     {% endif %}
                 </ul>
             </section>
@@ -31,8 +31,7 @@
                     <div class="col-md-8">
                         {% block content %}
                         {% endblock %}
-                        {% block login %}
-                        {% endblock %}
+                        
                     </div>
                 </div>
             </div>
