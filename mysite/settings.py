@@ -55,16 +55,18 @@ ACCOUNT_ACTIVATION_DAYS = 7     # время в течении которого 
 REGISTRATION_AUTO_LOGIN = True  # Если равно  True, то пользователь будет автоматически входить в систему.
 LOGIN_REDIRECT_URL = '/'  # Страница, на которую будут попадать пользователи, после успешного входа в систему.
 LOGIN_URL = '/accounts/login/'  # Страница, на которую перенаправляются пользователи, если они не вошли в систему и
-                                # пытаются получить доступ к страницам, которые требуют аутентификации
+REGISTRATION_EMAIL_SUBJECT_PREFIX = '[Django Registration Test App]'
+SEND_ACTIVATION_EMAIL = True                               # пытаются получить доступ к страницам, которые требуют аутентификации
 
 # для отправки кода активации
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 AUTH_USER_EMAIL_UNIQUE = True
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = 'info@google.ru'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'probachai.yu@gmail'
+EMAIL_HOST_PASSWORD = 'Zipper123'
+EMAIL_USE_TLS = True
+#DEFAULT_FROM_EMAIL = 'probachai.yu@gmail.com'
 
 
 
