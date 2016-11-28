@@ -30,8 +30,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 TEMPLATE_DIR =  (
-    'c:/Users/Yulia/djangogirls/blog/templates',
-     'c:/Users/Yulia/djangogirls/blog/templates/registration',
+    'blog/templates',
+     'blog/templates/registration',
     
 )
 
@@ -86,8 +86,8 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/Users/Yulia/djangogirls/blog/templates',
-    '/Users/Yulia/djangogirls/blog/templates/registration'],
+        'DIRS': ['blog/templates',
+    '/blog/templates/registration'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
