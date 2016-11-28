@@ -1,3 +1,4 @@
-Django==1.8
-django-registration==2.2
+django-polls==0.1
 django-registration-redux==1.4
+numpy==1.11.2
+virtualenv==15.1.0
