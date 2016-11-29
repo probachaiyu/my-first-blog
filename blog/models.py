@@ -10,6 +10,7 @@ class Post(models.Model):
             default=timezone.now)
     published_date = models.DateTimeField(
             blank=True, null=True)
+    likes = models.IntegerField(default=0)
 
     def publish(self):
         self.published_date = timezone.now()
@@ -17,3 +18,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comments(models.Model):
+    class Meta():
+        db_table='comments'
+    comments_text = models.CharField(max_length=500)
+    comments_post = models.ForeignKey(Post)
