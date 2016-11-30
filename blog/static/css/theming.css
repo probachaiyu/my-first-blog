@@ -1,0 +1,38 @@
+/* убираем страшный пятнистый фон */
+#header {
+    background: white;
+}
+
+/* на белом фоне теперь все равно ничего не видно */
+#user-tools{
+    display: none;
+}
+
+/* заголовок только занимает место */
+.dashboard-title{
+    display: none;
+}
+
+/* добавляем свою картинку в шапку и убираем оттуда текст */
+#header #branding h1 {
+    margin: 0;
+    padding: 5px 0px;
+    text-indent: -9999px;
+    background: deepskyblue url(/blog/static/images/like.png) right 7px no-repeat;
+    height: 30px;
+    width: 40px;
+    border-bottom: 1px solid lightgray;
+}
+
+/* визуально отделяем хлебные крошки */
+div.breadcrumbs {
+    display: block;
+    padding: 10px 15px;
+    border: 0;
+    background-position: 0 -8px;
+    border-bottom: 1px solid #ededed;
+}
+
+div.breadcrumbs a {
+    display: inline;
+}
