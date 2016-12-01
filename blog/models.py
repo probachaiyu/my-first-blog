@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms.fields import ImageField
 from django.utils import timezone
 from suit_ckeditor.widgets import CKEditorWidget
 
@@ -13,6 +14,7 @@ class Post(models.Model):
     formfield_overrides = {
         models.TextField: {'widget': CKEditorWidget},
     }
+    image = models.ImageField(upload_to='post', null=True, blank=True)
     likes = models.IntegerField(default=0)
 
 

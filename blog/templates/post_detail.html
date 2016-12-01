@@ -10,6 +10,8 @@
             {% endif %}
             <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
             <h1>{{ post.title }}</h1>
+            <img src="{{ post.image.url }}" width="189" height="255" alt="lorem">
+
             <p>{{ post.text|safe|escape|linebreaksbr }}</p>
             <p><a href="/post/add_like/{{ post.id }}/"> <img src="{% static "like.png" %}" wigth="25px" height="25px"> </a> {{ post.likes }} </p>
         <hr>
