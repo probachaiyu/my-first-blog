@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from suit_ckeditor.widgets import CKEditorWidget
 
 class Post(models.Model):
     author = models.ForeignKey('auth.User')
@@ -10,7 +10,11 @@ class Post(models.Model):
         default=timezone.now)
     published_date = models.DateTimeField(
         blank=True, null=True)
+    formfield_overrides = {
+        models.TextField: {'widget': CKEditorWidget},
+    }
     likes = models.IntegerField(default=0)
+
 
     def publish(self):
         self.published_date = timezone.now()

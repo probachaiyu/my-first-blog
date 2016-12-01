@@ -17,7 +17,7 @@ from django.contrib.auth import login
 
 
 def post_list(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    posts = Post.objects.all().order_by('-published_date')
     return render(request, 'post_list.html', {'posts': posts, 'username': auth.get_user(request).username})
 
 def post_detail(request, pk):

@@ -7,7 +7,10 @@
                 {{ post.published_date }}
             </div>
             <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
-            <p>{{ post.text|linebreaksbr }}</p>
+            <p>{{ post.text|safe|escape|linebreaksbr |truncatewords:80}}</p>
+            <br>
+            <p><a href="{% url 'post_detail' pk=post.pk %}">Читать полностью&raquo;</a></p>
+
             <p><a href="/post/add_like/{{ post.id }}/"> <img src="{% static "like.png" %}" wigth="25px" height="25px"> </a> {{ post.likes }} </p>
             <hr>
         </div>
