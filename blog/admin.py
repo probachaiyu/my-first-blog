@@ -19,7 +19,7 @@ class PostInline(admin.StackedInline):
     extra =2
 
 class PostAdmin(admin.ModelAdmin):
-    fields = ['title', 'text','created_date', 'published_date', ]
+    fields = ['author','title', 'text','created_date', 'published_date', ]
     formfield_overrides = {
         models.TextField: {'widget': CKEditorWidget},
     }
