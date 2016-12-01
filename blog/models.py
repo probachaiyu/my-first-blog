@@ -7,9 +7,9 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     text = models.TextField()
     created_date = models.DateTimeField(
-            default=timezone.now)
+        default=timezone.now)
     published_date = models.DateTimeField(
-            blank=True, null=True)
+        blank=True, null=True)
     likes = models.IntegerField(default=0)
 
     def publish(self):
@@ -22,6 +22,7 @@ class Post(models.Model):
 
 class Comments(models.Model):
     class Meta():
-        db_table='comments'
+        db_table = 'comments'
+
     comments_text = models.CharField(max_length=500)
     comments_post = models.ForeignKey(Post)

@@ -15,7 +15,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -27,41 +26,57 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-ADMIN_TOOLS_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
+#ADMIN_TOOLS_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
 
 # Application definition
-TEMPLATE_DIR =  (
+TEMPLATE_DIR = (
     'blog/templates',
-     'blog/templates/registration',
-    
+    'blog/templates/registration',
+
+)
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
+TEMPLATE_CONTEXT_PROCESSORS = TCP + (
+    'django.core.context_processors.request',
 )
 
-
 INSTALLED_APPS = (
-	'admin_tools',
-    'admin_tools.theming',
-    'admin_tools.menu',
-    'admin_tools.dashboard', 
+
+    #'admin_tools',
+    #'admin_tools.theming',
+    #'admin_tools.menu',
+    #'admin_tools.dashboard',
+    'django.contrib.staticfiles',
+    'suit',
+    'suit_ckeditor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+
     'blog',
-    'registration', 
-    
+    'registration',
+
 )
 
+SUIT_CONFIG = {
+    "MENU": (
+        {'label': "Example", "icon": 'icon-ok', "models": [
+            {"label": "for all", 'url': '/'},
+            {"label": "for stuff", 'url': '/admin/'},
+        ]},
+    )
+}
 
-REGISTRATION_OPEN = True        # Если равно True, то пользователи могут регистрироваться
-ACCOUNT_ACTIVATION_DAYS = 7     # время в течении которого можно активировать аккаунт;
-                                # в качестве примера выбрано 7 дней или одна неделя, но Вы можете указать другое значение.
+REGISTRATION_OPEN = True  # Если равно True, то пользователи могут регистрироваться
+ACCOUNT_ACTIVATION_DAYS = 7  # время в течении которого можно активировать аккаунт;
+# в качестве примера выбрано 7 дней или одна неделя, но Вы можете указать другое значение.
 REGISTRATION_AUTO_LOGIN = True  # Если равно  True, то пользователь будет автоматически входить в систему.
 LOGIN_REDIRECT_URL = '/'  # Страница, на которую будут попадать пользователи, после успешного входа в систему.
 LOGIN_URL = '/accounts/login/'  # Страница, на которую перенаправляются пользователи, если они не вошли в систему и
 REGISTRATION_EMAIL_SUBJECT_PREFIX = '[Django Registration Test App]'
-SEND_ACTIVATION_EMAIL = True                               # пытаются получить доступ к страницам, которые требуют аутентификации
+SEND_ACTIVATION_EMAIL = True  # пытаются получить доступ к страницам, которые требуют аутентификации
 
 # для отправки кода активации
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -71,7 +86,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
-#DEFAULT_FROM_EMAIL = 'probachai.yu@gmail.com'
+# DEFAULT_FROM_EMAIL = 'probachai.yu@gmail.com'
 
 
 
@@ -84,7 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    )
+)
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -92,7 +107,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ['blog/templates',
-    '/blog/templates/registration'],
+                 '/blog/templates/registration'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,7 +122,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
@@ -117,7 +131,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -132,11 +145,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'
-
+#ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'
