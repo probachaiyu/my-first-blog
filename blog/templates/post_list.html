@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block content %}
-  {% for post in posts %}
+  {% for post in object_list %}
         <div class="post">
             <div class="date">
                 {{ post.published_date }}

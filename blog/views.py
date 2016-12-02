@@ -5,15 +5,22 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.template.context_processors import csrf
 from django.utils import timezone
+from django.views.generic import ListView
 
 from .forms import CommentForm
 from .forms import PostForm
 from .models import Post, Comments
 
 
-def post_list(request):
-    posts = Post.objects.all().order_by('-published_date')
-    return render(request, 'post_list.html', {'posts': posts, 'username': auth.get_user(request).username})
+class BookList(ListView):
+    queryset = Post.objects.order_by('-published_date')
+    context_object_name = 'book_list'
+    template_name = 'post_list.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['username'] = auth.get_user(self.request).username
+        return data
 
 
 def post_detail(request, pk):
