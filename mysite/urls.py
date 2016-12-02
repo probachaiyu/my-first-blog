@@ -1,17 +1,9 @@
-from django.conf.urls import include, url, patterns
+from django.conf.urls import include, url
 from django.contrib import admin
 
-
-
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^accounts/', include('registration.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('blog.urls')),
-
-    #url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
-    #url(r'^accounts/register/$', 'registration.views.register', {'form': RegistrationFormUniqueEmail}, name='registration_register'),
-
-   
-
-)
+]

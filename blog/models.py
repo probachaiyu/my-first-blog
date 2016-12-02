@@ -1,22 +1,19 @@
 from django.db import models
-from django.forms.fields import ImageField
 from django.utils import timezone
 from suit_ckeditor.widgets import CKEditorWidget
+
 
 class Post(models.Model):
     author = models.ForeignKey('auth.User')
     title = models.CharField(max_length=200)
     text = models.TextField()
-    created_date = models.DateTimeField(
-        default=timezone.now)
-    published_date = models.DateTimeField(
-        blank=True, null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    published_date = models.DateTimeField(blank=True, null=True)
     formfield_overrides = {
         models.TextField: {'widget': CKEditorWidget},
     }
     image = models.ImageField(upload_to='post', null=True, blank=True)
     likes = models.IntegerField(default=0)
-
 
     def publish(self):
         self.published_date = timezone.now()
@@ -27,8 +24,8 @@ class Post(models.Model):
 
 
 class Comments(models.Model):
-    class Meta():
-        db_table = 'comments'
-
     comments_text = models.CharField(max_length=500)
     comments_post = models.ForeignKey(Post)
+
+    class Meta:
+        db_table = 'comments'

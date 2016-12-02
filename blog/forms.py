@@ -1,16 +1,13 @@
 from django import forms
-from django.forms.models import ModelForm
 
 from .models import Comments
 from .models import Post
 
-class PostForm(forms.ModelForm):
 
+class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ('title', 'text','image')
-        #ordering = ['-published_date']
-
+        fields = ('title', 'text', 'image')
 
 
 class CommentForm(forms.ModelForm):
