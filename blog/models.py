@@ -12,7 +12,7 @@ class Post(models.Model):
     formfield_overrides = {
         models.TextField: {'widget': CKEditorWidget},
     }
-    image = models.ImageField(upload_to='post', null=True, blank=True)
+    image = models.ImageField(upload_to='files', null=True, blank=True)
     likes = models.IntegerField(default=0)
 
     def publish(self):

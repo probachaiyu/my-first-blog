@@ -1,11 +1,14 @@
 from django.contrib import auth
-from django.core.exceptions import ObjectDoesNotExist
-from django.http.response import Http404
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
-from django.shortcuts import render, get_object_or_404
-from django.template.context_processors import csrf
 from django.utils import timezone
+from django.views.generic import CreateView
+from django.views.generic import FormView
 from django.views.generic import ListView
+from django.views.generic import RedirectView
+from django.views.generic import TemplateView
+from django.views.generic import UpdateView
 
 from .forms import CommentForm
 from .forms import PostForm
@@ -23,63 +26,75 @@ class BookList(ListView):
         return data
 
 
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    comment_form = CommentForm
-    args = {}
-    args.update(csrf(request))
-    args['post'] = post
-    args['username'] = auth.get_user(request).username
-    args['comments'] = Comments.objects.filter(comments_post_id=pk)
-    args['form'] = comment_form
-    return render(request, 'post_detail.html', args)
+class PostDetailsView(TemplateView):
+    template_name = 'post_detail.html'
+
+    def get_context_data(self, **kwargs):
+        pk = self.kwargs['pk']
+        data = super().get_context_data(**kwargs)
+        data['post'] = get_object_or_404(Post, pk=pk)
+        data['username'] = auth.get_user(self.request).username
+        data['comments'] = Comments.objects.filter(comments_post_id=pk)
+        data['form'] = CommentForm
+        return data
 
 
-def post_new(request):
-    if request.method == "POST":
+class PostTemplateView(FormView):
+    template_name = 'post_edit.html'
+    form_class = PostForm
 
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('blog.views.post_detail', pk=post.pk)
-    else:
-        form = PostForm()
-    return render(request, 'post_edit.html', {'form': form})
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.published_date = timezone.now()
+        post.save()
+        return redirect(self.get_success_url())
 
-
-def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.published_date = timezone.now()
-            post.save()
-            return redirect('blog.views.post_detail', pk=post.pk)
-    else:
-        form = PostForm(instance=post)
-    return render(request, 'post_edit.html', {'form': form})
+    def get_success_url(self):
+        return reverse('post_list')
 
 
-def post_like(request, post_id):
-    try:
-        post = Post.objects.get(id=post_id)
+class PostEdit(UpdateView):
+    template_name = 'post_edit.html'
+    model = Post
+    form_class = PostForm
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.kwargs['pk'])
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.published_date = timezone.now()
+        post.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse('post_detail', args=(self.kwargs['pk'],))
+
+
+class AddLike(RedirectView):
+    permanent = False
+    query_string = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        pk = self.kwargs['post_id']
+        post = get_object_or_404(Post, pk=pk)
         post.likes += 1
         post.save()
-    except ObjectDoesNotExist:
-        raise Http404
-    return redirect('/')
+        return reverse('post_detail', args=(pk,))
 
 
-def post_comment(request, post_id):
-    if request.POST:
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.comments_post = Post.objects.get(id=post_id)
-            form.save()
-    return redirect("/post/%s/" % post_id)
+class AddComment(CreateView):
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.comments_post = Post.objects.get(id=self.kwargs['post_id'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('post_detail', args=(self.kwargs['post_id'],))
