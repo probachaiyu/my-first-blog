@@ -17,7 +17,7 @@
         {% endif %}
 
         <p>{{ post.text|safe|escape|linebreaksbr }}</p>
-        <p><a href="/post/add_like/{{ post.id }}/"> <img src="{% static "like.png" %}" wigth="25px" height="25px">
+        <p><a href="{% url 'post_like' post.id %}"> <img src="{% static "like.png" %}" wigth="25px" height="25px">
         </a> {{ post.likes }} </p>
         <hr>
         <H3> Комментарии </H3>
@@ -25,11 +25,10 @@
             <p> {{ comment.comments_text }}</p>
         {% endfor %}
         <hr>
-        <form action="/post_detail/addcomment/{{ post.id }}/" method="post">
+        <form action="{% url 'post_comment' post.id %}" method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" class="Button" value="Add comment">
         </form>
-
     </div>
 {% endblock %}
