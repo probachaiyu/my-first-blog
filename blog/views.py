@@ -1,6 +1,8 @@
 from django.contrib import auth
+from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.generic import CreateView
@@ -9,6 +11,7 @@ from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
+from django.views.generic.edit import DeleteView
 
 from .forms import CommentForm
 from .forms import PostForm
@@ -16,13 +19,26 @@ from .models import Post, Comments
 
 
 class BookList(ListView):
-    queryset = Post.objects.order_by('-published_date')
+    queryset = Post.objects.all().order_by('-published_date')
+   # paginator = Paginator(queryset, 3)
+    paginator = Paginator(queryset, 3)
+    paginate_by = 3
     context_object_name = 'book_list'
     template_name = 'post_list.html'
 
+
     def get_context_data(self, **kwargs):
+
         data = super().get_context_data(**kwargs)
         data['username'] = auth.get_user(self.request).username
+        try:
+            page_num = self.request.GET['page']
+        except KeyError:
+            page_num = 1
+        try:
+            data['posts'] = self.paginator.page(page_num)
+        except InvalidPage:
+            data['posts'] = self.paginator.page(1)
         return data
 
 
@@ -78,7 +94,7 @@ class PostEdit(UpdateView):
 
 class AddLike(RedirectView):
     permanent = False
-    query_string = True
+    query_strnig = True
 
     def get_redirect_url(self, *args, **kwargs):
         pk = self.kwargs['post_id']
@@ -91,6 +107,10 @@ class AddLike(RedirectView):
 class AddComment(CreateView):
     form_class = CommentForm
 
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.kwargs['pk'])
+
     def form_valid(self, form):
         comment = form.save(commit=False)
         comment.comments_post = Post.objects.get(id=self.kwargs['post_id'])
@@ -98,3 +118,36 @@ class AddComment(CreateView):
 
     def get_success_url(self):
         return reverse('post_detail', args=(self.kwargs['post_id'],))
+
+
+class CommentEdit(UpdateView):
+    form_class = CommentForm
+    model = Comments
+    template_name = 'comments_form.html'
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.kwargs['id'])
+
+
+    def form_valid(self, form):
+
+        comment = form.save(commit=False)
+        comment.get_object= Comments.objects.get(id=self.kwargs['id'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        comment = self.get_object()
+
+        return reverse('post_detail', args=(comment.comments_post_id, ))
+
+
+
+
+class CommentDelete(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+
+        id= self.kwargs['id']
+        comment = get_object_or_404(Comments, id=id)
+        pk = comment.comments_post_id
+        comment.delete()
+        return reverse('post_detail', args=(pk, ))

@@ -1,5 +1,5 @@
-Django==1.8
-django-admin-tools==0.5.2
+Django==1.10.3
+django-admin-tools==0.8.0
 django-registration==2.2
 django-suit==0.2.22
 django-suit-ckeditor==0.0.2

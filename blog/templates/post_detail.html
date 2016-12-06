@@ -22,14 +22,21 @@
         <hr>
         <H3> Комментарии </H3>
         {% for comment in comments %}
-            <p> {{ comment.comments_text }}</p>
+            <p> {{ comment.comments_text }}
+                <a class="btn btn-default" href="{% url 'edit_comment' pk=1 id=comment.id   %}"><span
+                class="glyphicon glyphicon-pencil"></span></a>
+                <a href = "{% url 'delete_comment'  id=comment.id pk=1   %}" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?')">Удалить</a>
+            </p>
         {% endfor %}
         <hr>
-        <form action="/post_detail/addcomment/{{ post.id }}/" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" class="Button" value="Add comment">
-        </form>
+        {% if username %}
+            <form action="/post_detail/addcomment/{{ post.id }}/" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" class="Button" value="Add comment">
+            </form>
+            {% endif %}
+
 
     </div>
 {% endblock %}
