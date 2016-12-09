@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <h1> Категории: </h1>
+  {% for category in categories %}
+        <div class="category">
+
+
+
+            <h3><a href="{% url 'category' id=category.id %}">{{ category }}</a></h3>
+
+        </div>
+   {% endfor %}
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if categories.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ categories.number }} of {{ categories.paginator.num_pages }}.
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ categories.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}

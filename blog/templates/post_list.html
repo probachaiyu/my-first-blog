@@ -7,10 +7,17 @@
                 {{ post.published_date }}
             </div>
             <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+            <h3>категория: <a href="category/{{ post.category_id }}"> {{ post.category}}</a></h3>
             <p>{{ post.text|safe|escape|linebreaksbr |truncatewords:80}}</p>
             <br>
             <p><a href="{% url 'post_detail' pk=post.pk %}">Читать полностью&raquo;</a></p>
+            <div class="tags">ключевые слова:
+	        {% for tag in post.tag.all %}
+		            <a href="tag/{{ tag.id }}">{{ tag }}</a>
 
+
+	        {% endfor %}
+	        </div>
             <p><a href="/post/add_like/{{ post.pk }}/"> <img src="{% static "like.png" %}" wigth="25px" height="25px"> </a> {{ post.likes }} </p>
             <hr>
         </div>

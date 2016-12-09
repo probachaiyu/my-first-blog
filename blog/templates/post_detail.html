@@ -12,11 +12,22 @@
                 class="glyphicon glyphicon-pencil"></span></a>
         <h1>{{ post.title }}</h1>
 
+        <h3>категория: <a href="category/{{ post.category_id }}"> {{ post.category}}</a></h3>
+
         {% if post.image %}
             <img src="{{ post.image.url }}" width="189" height="255">
         {% endif %}
 
         <p>{{ post.text|safe|escape|linebreaksbr }}</p>
+
+        <div class="tags">ключевые слова:
+	        {% for tag in post.tag.all %}
+		            <a href="tag/{{ tag.id }}">{{ tag }}</a>
+
+		                {% if not forloop.last %}, {% endif %}
+	        {% endfor %}
+        </div>
+
         <p><a href="/post/add_like/{{ post.id }}/"> <img src="{% static "like.png" %}" wigth="25px" height="25px">
         </a> {{ post.likes }} </p>
         <hr>

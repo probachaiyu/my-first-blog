@@ -3,6 +3,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.db import models
 from suit_ckeditor.widgets import CKEditorWidget
+from blog.models import Tag, Category
+admin.site.register(Tag)
+admin.site.register(Category)
 
 from .models import Post, Comments
 
@@ -22,8 +25,9 @@ class PostInline(admin.StackedInline):
     extra = 3
 
 
+
 class PostAdmin(admin.ModelAdmin):
-    fields = ['author', 'title', 'text', 'created_date', 'published_date', 'image']
+    fields = ['category','author', 'title', 'text', 'created_date', 'published_date', 'image', 'tag' ]
     formfield_overrides = {
         models.TextField: {'widget': CKEditorWidget},
     }

@@ -13,9 +13,9 @@ from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 from django.views.generic.edit import DeleteView
 
-from .forms import CommentForm
+from .forms import CommentForm, CategoryForm
 from .forms import PostForm
-from .models import Post, Comments
+from .models import Post, Comments, Category, Tag
 
 
 class BookList(ListView):
@@ -51,6 +51,8 @@ class PostDetailsView(TemplateView):
         data['post'] = get_object_or_404(Post, pk=pk)
         data['username'] = auth.get_user(self.request).username
         data['comments'] = Comments.objects.filter(comments_post_id=pk)
+        #data['category'] = Category.objects.filter(category_post_id=pk)
+        #data['tag'] = Tag.objects.filter(tag_post_id=pk)
         data['form'] = CommentForm
         return data
 
@@ -94,7 +96,7 @@ class PostEdit(UpdateView):
 
 class AddLike(RedirectView):
     permanent = False
-    query_strnig = True
+    query_string = True
 
     def get_redirect_url(self, *args, **kwargs):
         pk = self.kwargs['post_id']
@@ -151,3 +153,51 @@ class CommentDelete(RedirectView):
         pk = comment.comments_post_id
         comment.delete()
         return reverse('post_detail', args=(pk, ))
+
+
+class PostCategoryView(ListView):
+    model = Category
+    template_name = 'category.html'
+
+    def get_queryset(self):
+        id = self.kwargs['id']
+        if id==None:
+            posts = Post.objects.filter(category=None)
+        else :
+            category = Category.objects.get(id=id)
+        #category = Category.objects.get(id=self.kwargs['id'])
+            posts = Post.objects.filter(category=category)
+        return posts
+
+class TagView(ListView):
+    model = Tag
+    template_name = 'tagpage.html'
+
+    def get_queryset(self):
+        tag = Tag.objects.get(id=self.kwargs['id'])
+        posts = Post.objects.filter(tag=tag)
+        return posts
+
+
+class CategoryView(ListView):
+    queryset = Category.objects.all().order_by('name')
+    # paginator = Paginator(queryset, 3)
+    paginator = Paginator(queryset, 3)
+    paginate_by = 20
+    context_object_name = 'categories'
+    template_name = 'category_list.html'
+
+    def get_context_data(self, **kwargs):
+
+        data = super().get_context_data(**kwargs)
+
+        try:
+            page_num = self.request.GET['page']
+        except KeyError:
+            page_num = 1
+        try:
+            data['categories'] = self.paginator.page(page_num)
+        except InvalidPage:
+            data['categories'] = self.paginator.page(1)
+        return data
+
