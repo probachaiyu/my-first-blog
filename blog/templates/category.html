@@ -6,6 +6,6 @@
     <h2>Статьи в категории - {{ category.name }}:</h2>
     	{% for post in object_list %}
 
-        	<p><a href="/post/{{ post.pk }}"> <h3>{{ post.title }}</h3></a></p>
+            <p><a href={% url "category" pk=post.pk %}"> <h3>{{ post.title }}</h3></a></p>
     	{% endfor %}
 {% endblock content %}

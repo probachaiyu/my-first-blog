@@ -1,8 +1,7 @@
 from django.contrib import auth
-from django.core.paginator import Paginator, InvalidPage
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.generic import CreateView
@@ -11,34 +10,23 @@ from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
-from django.views.generic.edit import DeleteView
 
-from .forms import CommentForm, CategoryForm
+from .forms import CommentForm
 from .forms import PostForm
 from .models import Post, Comments, Category, Tag
 
 
 class BookList(ListView):
     queryset = Post.objects.all().order_by('-published_date')
-   # paginator = Paginator(queryset, 3)
+    # paginator = Paginator(queryset, 3)
     paginator = Paginator(queryset, 3)
     paginate_by = 3
     context_object_name = 'book_list'
     template_name = 'post_list.html'
 
-
     def get_context_data(self, **kwargs):
-
         data = super().get_context_data(**kwargs)
         data['username'] = auth.get_user(self.request).username
-        try:
-            page_num = self.request.GET['page']
-        except KeyError:
-            page_num = 1
-        try:
-            data['posts'] = self.paginator.page(page_num)
-        except InvalidPage:
-            data['posts'] = self.paginator.page(1)
         return data
 
 
@@ -51,8 +39,8 @@ class PostDetailsView(TemplateView):
         data['post'] = get_object_or_404(Post, pk=pk)
         data['username'] = auth.get_user(self.request).username
         data['comments'] = Comments.objects.filter(comments_post_id=pk)
-        #data['category'] = Category.objects.filter(category_post_id=pk)
-        #data['tag'] = Tag.objects.filter(tag_post_id=pk)
+        # data['category'] = Category.objects.filter(category_post_id=pk)
+        # data['tag'] = Tag.objects.filter(tag_post_id=pk)
         data['form'] = CommentForm
         return data
 
@@ -109,7 +97,6 @@ class AddLike(RedirectView):
 class AddComment(CreateView):
     form_class = CommentForm
 
-
     def get_object(self, queryset=None):
         return self.model.objects.get(pk=self.kwargs['pk'])
 
@@ -130,29 +117,24 @@ class CommentEdit(UpdateView):
     def get_object(self, queryset=None):
         return self.model.objects.get(pk=self.kwargs['id'])
 
-
     def form_valid(self, form):
-
         comment = form.save(commit=False)
-        comment.get_object= Comments.objects.get(id=self.kwargs['id'])
+        comment.get_object = Comments.objects.get(id=self.kwargs['id'])
         return super().form_valid(form)
 
     def get_success_url(self):
         comment = self.get_object()
 
-        return reverse('post_detail', args=(comment.comments_post_id, ))
-
-
+        return reverse('post_detail', args=(comment.comments_post_id,))
 
 
 class CommentDelete(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-
-        id= self.kwargs['id']
+        id = self.kwargs['id']
         comment = get_object_or_404(Comments, id=id)
         pk = comment.comments_post_id
         comment.delete()
-        return reverse('post_detail', args=(pk, ))
+        return reverse('post_detail', args=(pk,))
 
 
 class PostCategoryView(ListView):
@@ -161,13 +143,14 @@ class PostCategoryView(ListView):
 
     def get_queryset(self):
         id = self.kwargs['id']
-        if id==None:
+        if id == None:
             posts = Post.objects.filter(category=None)
-        else :
+        else:
             category = Category.objects.get(id=id)
-        #category = Category.objects.get(id=self.kwargs['id'])
+            # category = Category.objects.get(id=self.kwargs['id'])
             posts = Post.objects.filter(category=category)
         return posts
+
 
 class TagView(ListView):
     model = Tag
@@ -188,16 +171,5 @@ class CategoryView(ListView):
     template_name = 'category_list.html'
 
     def get_context_data(self, **kwargs):
-
         data = super().get_context_data(**kwargs)
-
-        try:
-            page_num = self.request.GET['page']
-        except KeyError:
-            page_num = 1
-        try:
-            data['categories'] = self.paginator.page(page_num)
-        except InvalidPage:
-            data['categories'] = self.paginator.page(1)
         return data
-

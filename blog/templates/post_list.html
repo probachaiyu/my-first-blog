@@ -7,34 +7,35 @@
                 {{ post.published_date }}
             </div>
             <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
-            <h3>категория: <a href="category/{{ post.category_id }}"> {{ post.category}}</a></h3>
+            <h3>категория: <a href="{% url "category" id=post.category_id %}"> {{ post.category }}</a></h3>
             <p>{{ post.text|safe|escape|linebreaksbr |truncatewords:80}}</p>
             <br>
             <p><a href="{% url 'post_detail' pk=post.pk %}">Читать полностью&raquo;</a></p>
             <div class="tags">ключевые слова:
 	        {% for tag in post.tag.all %}
-		            <a href="tag/{{ tag.id }}">{{ tag }}</a>
+                <a href="{% url "tag" id=tag.id %}">{{ tag }}</a>
 
 
 	        {% endfor %}
 	        </div>
-            <p><a href="/post/add_like/{{ post.pk }}/"> <img src="{% static "like.png" %}" wigth="25px" height="25px"> </a> {{ post.likes }} </p>
+            <p><a href="{% url "post_like" post_id=post.pk %}"> <img src="{% static "like.png" %}" wigth="25px"
+                                                                     height="25px"> </a> {{ post.likes }} </p>
             <hr>
         </div>
    {% endfor %}
 
     <div class="pagination">
     <span class="step-links">
-        {% if posts.has_previous %}
-            <a href="?page={{ posts.previous_page_number }}">previous</a>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
         {% endif %}
 
         <span class="current">
-            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
         </span>
 
-        {% if posts.has_next %}
-            <a href="?page={{ posts.next_page_number }}">next</a>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
         {% endif %}
     </span>
 </div>

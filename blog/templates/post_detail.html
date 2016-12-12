@@ -12,7 +12,7 @@
                 class="glyphicon glyphicon-pencil"></span></a>
         <h1>{{ post.title }}</h1>
 
-        <h3>категория: <a href="category/{{ post.category_id }}"> {{ post.category}}</a></h3>
+        <h3>категория: <a href="{% url  "category" id=post.category_id %}"> {{ post.category }}</a></h3>
 
         {% if post.image %}
             <img src="{{ post.image.url }}" width="189" height="255">
@@ -22,13 +22,14 @@
 
         <div class="tags">ключевые слова:
 	        {% for tag in post.tag.all %}
-		            <a href="tag/{{ tag.id }}">{{ tag }}</a>
+                <a href="{% url "tag" id=tag.id %}">{{ tag }}</a>
 
 		                {% if not forloop.last %}, {% endif %}
 	        {% endfor %}
         </div>
 
-        <p><a href="/post/add_like/{{ post.id }}/"> <img src="{% static "like.png" %}" wigth="25px" height="25px">
+        <p><a href="{% url 'post_like' post_id=post.id %}"> <img src="{% static "like.png" %}" wigth="25px"
+                                                                 height="25px">
         </a> {{ post.likes }} </p>
         <hr>
         <H3> Комментарии </H3>
@@ -41,7 +42,7 @@
         {% endfor %}
         <hr>
         {% if username %}
-            <form action="/post_detail/addcomment/{{ post.id }}/" method="post">
+            <form action="{% url "post_comment" post_id=post.id %}/" method="post">
                 {% csrf_token %}
                 {{ form }}
                 <input type="submit" class="Button" value="Add comment">
